@@ -37,17 +37,15 @@ def setup_logging():
 
 def loop():
     for subreddit in settings.subreddits:
-        logging.info(f'Parsing subreddit: {subreddit}')
         for post in reddit.subreddit(subreddit).new(limit=constants.NEW_POST_COUNT):
-            logging.info(f'Parsing post: {post}')
-            
             post_exist = PostModel.select().where(PostModel.reddit_post_id == post)
             if post_exist.exists():
                 continue
             
-            post, created = PostModel.get_or_create(reddit_post_id=post, subreddit=subreddit,
+            post_id, created = PostModel.get_or_create(reddit_post_id=post, subreddit=subreddit,
                             post_date=datetime.datetime.now(), author=post.author, title=post.title,
                             content=post.selftext, url=post.url)
+            logging.info(f'[{subreddit}] Added post: {post}')
     time.sleep(settings.interval)
 
 if __name__ == '__main__':

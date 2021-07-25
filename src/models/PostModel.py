@@ -5,7 +5,7 @@ class PostModel(BaseModel):
     post_id = AutoField()
     reddit_post_id = TextField()
     subreddit = TextField()
-    post_date = DateField()
+    post_date = DateTimeField()
     author = TextField()
     title = TextField()
     content = TextField()
