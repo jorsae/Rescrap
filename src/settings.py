@@ -9,6 +9,7 @@ class Settings:
         self.password = None
         self.user_agent = None
         self.interval = 60
+        self.subreddits = []
     
     def parse_settings(self):
         try:
@@ -22,5 +23,6 @@ class Settings:
             self.password = data["password"]
             self.user_agent = data["user_agent"]
             self.interval = int(data["interval"])
+            self.subreddits = data["subreddits"]
         except Exception as e:
             print(e)

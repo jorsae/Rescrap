@@ -37,6 +37,8 @@ def setup_logging():
 
 def loop():
     print(constants.NEW_POST_COUNT)
+    for subreddit in settings.subreddits:
+        print(f'TODO: parse posts from: {subreddit}')
     time.sleep(settings.interval)
 
 if __name__ == '__main__':
