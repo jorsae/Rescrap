@@ -1,5 +1,5 @@
 import praw
-import os, time
+import os, time, datetime
 import logging
 from peewee import *
 
@@ -36,9 +36,18 @@ def setup_logging():
     logging.basicConfig(handlers=[handler], level=logging.INFO, format='%(asctime)s %(levelname)s:[%(filename)s:%(lineno)d] %(message)s')
 
 def loop():
-    print(constants.NEW_POST_COUNT)
     for subreddit in settings.subreddits:
-        print(f'TODO: parse posts from: {subreddit}')
+        logging.info(f'Parsing subreddit: {subreddit}')
+        for post in reddit.subreddit(subreddit).new(limit=constants.NEW_POST_COUNT):
+            logging.info(f'Parsing post: {post}')
+            
+            post_exist = PostModel.select().where(PostModel.reddit_post_id == post)
+            if post_exist.exists():
+                continue
+            
+            post, created = PostModel.get_or_create(reddit_post_id=post, subreddit=subreddit,
+                            post_date=datetime.datetime.now(), author=post.author, title=post.title,
+                            content=post.selftext, url=post.url)
     time.sleep(settings.interval)
 
 if __name__ == '__main__':
