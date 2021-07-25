@@ -8,6 +8,7 @@ class Settings:
         self.username = None
         self.password = None
         self.user_agent = None
+        self.interval = 60
     
     def parse_settings(self):
         try:
@@ -20,5 +21,6 @@ class Settings:
             self.username = data["username"]
             self.password = data["password"]
             self.user_agent = data["user_agent"]
+            self.interval = int(data["interval"])
         except Exception as e:
             print(e)
