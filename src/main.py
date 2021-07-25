@@ -1,7 +1,11 @@
 import praw
 import os, time
 import logging
+from peewee import *
+
 from settings import Settings
+from models import *
+import constants
 
 settings = Settings('./settings.json')
 
@@ -14,11 +18,14 @@ def login():
         username = settings.username,
     )
     return reddit
-    for submission in reddit.subreddit("csharp").hot(limit=1):
-        print(submission.title)
-        print(submission)
-        print(submission.selftext)
-        print(submission.url)
+    for post in reddit.subreddit("csharp").hot(limit=1):
+        print(post.title)
+        print(post)
+        print(post.selftext)
+        print(post.url)
+
+def setup_database():
+    database.create_tables([PostModel])
 
 def setup_logging():
     logFolder = 'logs'
@@ -29,11 +36,13 @@ def setup_logging():
     logging.basicConfig(handlers=[handler], level=logging.INFO, format='%(asctime)s %(levelname)s:[%(filename)s:%(lineno)d] %(message)s')
 
 def loop():
+    print(constants.NEW_POST_COUNT)
     time.sleep(settings.interval)
 
 if __name__ == '__main__':
     setup_logging()
     settings.parse_settings()
+    setup_database()
 
     reddit = login()
     logging.info(f'Logged in as: {reddit.user.me()}')
