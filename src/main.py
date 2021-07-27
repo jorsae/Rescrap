@@ -38,7 +38,13 @@ def setup_logging():
 def loop():
     while True:
         for subreddit in settings.subreddits:
-            for post in reddit.subreddit(subreddit).new(limit=constants.NEW_POST_COUNT):
+            posts = None
+            try:
+                posts = reddit.subreddit(subreddit).new(limit=constants.NEW_POST_COUNT)
+            except Exception as e:
+                logging.error(e)
+            
+            for post in posts:
                 post_exist = PostModel.select().where(PostModel.reddit_post_id == post)
                 if post_exist.exists():
                     continue
