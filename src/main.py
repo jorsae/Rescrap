@@ -7,7 +7,7 @@ from settings import Settings
 from models import *
 import constants
 
-settings = Settings('./settings.json')
+settings = Settings('../settings.json')
 
 def login():
     reddit = praw.Reddit(
@@ -28,7 +28,7 @@ def setup_database():
     database.create_tables([PostModel])
 
 def setup_logging():
-    logFolder = 'logs'
+    logFolder = '../logs'
     logFile = 'rescrap.log'
     if not os.path.isdir(logFolder):
         os.makedirs(logFolder)
