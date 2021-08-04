@@ -45,14 +45,17 @@ def loop():
                 logging.error(e)
             
             for post in posts:
-                post_exist = PostModel.select().where(PostModel.reddit_post_id == post)
-                if post_exist.exists():
-                    continue
-                
-                post_id, created = PostModel.get_or_create(reddit_post_id=post, subreddit=subreddit,
-                                post_date=datetime.datetime.now(), author=post.author, title=post.title,
-                                content=post.selftext, url=post.url)
-                logging.info(f'[{subreddit}] Added post: {post}')
+                try:
+                    post_exist = PostModel.select().where(PostModel.reddit_post_id == post)
+                    if post_exist.exists():
+                        continue
+                    
+                    post_id, created = PostModel.get_or_create(reddit_post_id=post, subreddit=subreddit,
+                                    post_date=datetime.datetime.now(), author=post.author, title=post.title,
+                                    content=post.selftext, url=post.url)
+                    logging.info(f'[{subreddit}] Added post: {post}')
+                except Exception as e:
+                    logging.error(e)
         time.sleep(settings.interval)
 
 if __name__ == '__main__':
